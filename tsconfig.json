@@ -10,15 +10,18 @@
     "lib": ["ES2019", "DOM", "esnext"],
     "module": "commonjs",
     "strict": true,
-    "target": "es2018",
+    "target": "ES2020",
     "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
     "paths": {
-      "dfx-generated/whoami": ["./.dfx/local/canisters/whoami"]
+      "dfx-generated/azle_starter": ["./.dfx/local/canisters/azle_starter"]
     }
   },
 

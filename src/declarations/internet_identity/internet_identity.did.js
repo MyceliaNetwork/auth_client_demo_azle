@@ -1,9 +1,14 @@
 export const idlFactory = ({ IDL }) => {
+  const ArchiveConfig = IDL.Record({
+    'polling_interval_ns' : IDL.Nat64,
+    'entries_buffer_limit' : IDL.Nat64,
+    'module_hash' : IDL.Vec(IDL.Nat8),
+    'entries_fetch_limit' : IDL.Nat16,
+  });
   const InternetIdentityInit = IDL.Record({
-    'archive_module_hash' : IDL.Opt(IDL.Vec(IDL.Nat8)),
     'assigned_user_number_range' : IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
+    'archive_config' : IDL.Opt(ArchiveConfig),
     'canister_creation_cycles_cost' : IDL.Opt(IDL.Nat64),
-    'layout_migration_batch_size' : IDL.Opt(IDL.Nat32),
   });
   const UserNumber = IDL.Nat64;
   const DeviceProtection = IDL.Variant({
@@ -25,6 +30,7 @@ export const idlFactory = ({ IDL }) => {
   const CredentialId = IDL.Vec(IDL.Nat8);
   const DeviceData = IDL.Record({
     'alias' : IDL.Text,
+    'origin' : IDL.Opt(IDL.Text),
     'protection' : DeviceProtection,
     'pubkey' : DeviceKey,
     'key_type' : KeyType,
@@ -49,6 +55,12 @@ export const idlFactory = ({ IDL }) => {
     'creation_in_progress' : IDL.Null,
     'success' : IDL.Principal,
     'failed' : IDL.Text,
+  });
+  const BufferedArchiveEntry = IDL.Record({
+    'sequence_number' : IDL.Nat64,
+    'entry' : IDL.Vec(IDL.Nat8),
+    'anchor_number' : UserNumber,
+    'timestamp' : Timestamp,
   });
   const DeviceRegistrationInfo = IDL.Record({
     'tentative_device' : IDL.Opt(DeviceData),
@@ -111,22 +123,13 @@ export const idlFactory = ({ IDL }) => {
     'canister_full' : IDL.Null,
     'registered' : IDL.Record({ 'user_number' : UserNumber }),
   });
-  const LayoutMigrationState = IDL.Variant({
-    'started' : IDL.Record({
-      'batch_size' : IDL.Nat64,
-      'anchors_left' : IDL.Nat64,
-    }),
-    'finished' : IDL.Null,
-    'not_started' : IDL.Null,
-  });
   const ArchiveInfo = IDL.Record({
-    'expected_wasm_hash' : IDL.Opt(IDL.Vec(IDL.Nat8)),
+    'archive_config' : IDL.Opt(ArchiveConfig),
     'archive_canister' : IDL.Opt(IDL.Principal),
   });
   const InternetIdentityStats = IDL.Record({
     'storage_layout_version' : IDL.Nat8,
     'users_registered' : IDL.Nat64,
-    'layout_migration_state' : IDL.Opt(LayoutMigrationState),
     'assigned_user_number_range' : IDL.Tuple(IDL.Nat64, IDL.Nat64),
     'archive_info' : ArchiveInfo,
     'canister_creation_cycles_cost' : IDL.Nat64,
@@ -138,6 +141,7 @@ export const idlFactory = ({ IDL }) => {
     'no_device_to_verify' : IDL.Null,
   });
   return IDL.Service({
+    'acknowledge_entries' : IDL.Func([IDL.Nat64], [], []),
     'add' : IDL.Func([UserNumber, DeviceData], [], []),
     'add_tentative_device' : IDL.Func(
         [UserNumber, DeviceData],
@@ -148,6 +152,7 @@ export const idlFactory = ({ IDL }) => {
     'deploy_archive' : IDL.Func([IDL.Vec(IDL.Nat8)], [DeployArchiveResult], []),
     'enter_device_registration_mode' : IDL.Func([UserNumber], [Timestamp], []),
     'exit_device_registration_mode' : IDL.Func([UserNumber], [], []),
+    'fetch_entries' : IDL.Func([], [IDL.Vec(BufferedArchiveEntry)], []),
     'get_anchor_info' : IDL.Func([UserNumber], [IdentityAnchorInfo], []),
     'get_delegation' : IDL.Func(
         [UserNumber, FrontendHostname, SessionKey, Timestamp],
@@ -173,6 +178,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'remove' : IDL.Func([UserNumber, DeviceKey], [], []),
+    'replace' : IDL.Func([UserNumber, DeviceKey, DeviceData], [], []),
     'stats' : IDL.Func([], [InternetIdentityStats], ['query']),
     'update' : IDL.Func([UserNumber, DeviceKey, DeviceData], [], []),
     'verify_tentative_device' : IDL.Func(
@@ -183,11 +189,16 @@ export const idlFactory = ({ IDL }) => {
   });
 };
 export const init = ({ IDL }) => {
+  const ArchiveConfig = IDL.Record({
+    'polling_interval_ns' : IDL.Nat64,
+    'entries_buffer_limit' : IDL.Nat64,
+    'module_hash' : IDL.Vec(IDL.Nat8),
+    'entries_fetch_limit' : IDL.Nat16,
+  });
   const InternetIdentityInit = IDL.Record({
-    'archive_module_hash' : IDL.Opt(IDL.Vec(IDL.Nat8)),
     'assigned_user_number_range' : IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
+    'archive_config' : IDL.Opt(ArchiveConfig),
     'canister_creation_cycles_cost' : IDL.Opt(IDL.Nat64),
-    'layout_migration_batch_size' : IDL.Opt(IDL.Nat32),
   });
   return [IDL.Opt(InternetIdentityInit)];
 };

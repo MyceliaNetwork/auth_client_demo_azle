@@ -13,7 +13,16 @@
     "prebuild": "npm run generate",
     "start": "webpack serve --mode development --env development",
     "prestart": "npm run generate",
-    "generate": "dfx generate whoami"
+    "generate": "dfx generate azle_starter",
+    "ruler": "=======================================",
+    "dfx_install": "DFX_VERSION=0.12.1 sh -ci \"$(curl -fsSL https://sdk.dfinity.org/install.sh)\"",
+    "replica_start": "dfx start --background",
+    "replica_stop": "dfx stop",
+    "canister_deploy_local": "dfx deploy azle_starter",
+    "canister_deploy_mainnet": "dfx deploy --network ic azle_starter",
+    "canister_uninstall": "dfx canister uninstall-code azle_starter",
+    "canister_call_get_message": "dfx canister call azle_starter get_message",
+    "canister_call_set_message": "dfx canister call azle_starter set_message '(\"Hello world!\")'"
   },
   "devDependencies": {
     "assert": "2.0.0",
@@ -36,6 +45,7 @@
     "last 2 edge version"
   ],
   "dependencies": {
+    "azle": "0.13.2",
     "@dfinity/agent": "0.15.1",
     "@dfinity/auth-client": "^0.15.1",
     "@dfinity/candid": "0.15.1",

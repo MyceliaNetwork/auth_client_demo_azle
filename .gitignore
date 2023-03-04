@@ -16,3 +16,4 @@ dist/
 .env
 
 src/declarations
+.azle

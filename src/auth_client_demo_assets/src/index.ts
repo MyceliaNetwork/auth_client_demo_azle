@@ -1,7 +1,7 @@
 import { AuthClient } from "@dfinity/auth-client";
 import { renderIndex } from "./views";
 import { renderLoggedIn } from "./views/loggedIn";
-import { canisterId, createActor } from "../../declarations/whoami";
+import { canisterId, createActor } from "../../declarations/azle_starter";
 import { Actor, Identity } from "@dfinity/agent";
 
 const init = async () => {
@@ -35,6 +35,11 @@ const init = async () => {
   const hours = BigInt(24);
   const nanoseconds = BigInt(3600000000000);
 
+  // TODO: extract from canister_ids.json
+  const II_LOCAL_CANISTER_ID = `ryjl3-tyaaa-aaaaa-aaaba-cai`;
+
+  // `http://${II_LOCAL_CANISTER_ID}.localhost:8000/`
+
   loginButton.onclick = () => {
     authClient.login({
       onSuccess: async () => {
@@ -43,7 +48,9 @@ const init = async () => {
       identityProvider:
         process.env.DFX_NETWORK === "ic"
           ? "https://identity.ic0.app/#authorize"
-          : `http://localhost:${process.env.REPLICA_PORT}?canisterId=${process.env.INTERNET_IDENTITY_CANISTER_ID}#authorize`,
+          : `http://${II_LOCAL_CANISTER_ID}.localhost:8000/`,
+      // `http://localhost:${process.env.REPLICA_PORT}?canisterId=${process.env.INTERNET_IDENTITY_CANISTER_ID}#authorize`,
+
       // Maximum authorization expiration is 8 days
       maxTimeToLive: days * hours * nanoseconds,
     });
@@ -62,18 +69,18 @@ async function setupToast() {
 
 async function handleAuthenticated(authClient: AuthClient) {
   const identity = (await authClient.getIdentity()) as unknown as Identity;
-  const whoami_actor = createActor(canisterId as string, {
+  const azle_starter_actor = createActor(canisterId as string, {
     agentOptions: {
       identity,
     },
   });
   // Invalidate identity then render login when user goes idle
   authClient.idleManager?.registerCallback(() => {
-    Actor.agentOf(whoami_actor)?.invalidateIdentity?.();
+    Actor.agentOf(azle_starter_actor)?.invalidateIdentity?.();
     renderIndex();
   });
 
-  renderLoggedIn(whoami_actor, authClient);
+  renderLoggedIn(azle_starter_actor, authClient);
 }
 
 init();

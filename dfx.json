@@ -1,8 +1,12 @@
 {
   "canisters": {
-    "whoami": {
-      "main": "src/whoami/main.mo",
-      "type": "motoko"
+    "azle_starter": {
+      "type": "custom",
+      "build": "npx azle azle_starter",
+      "root": "src",
+      "ts": "src/index.ts",
+      "candid": "src/index.did",
+      "wasm": ".azle/azle_starter/azle_starter.wasm.gz"
     },
     "internet_identity": {
       "type": "custom",
@@ -15,11 +19,9 @@
           "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
         }
       }
-    }
-  ,"auth_client_demo_assets": {
-      "dependencies": [
-        "whoami"
-      ],
+    },
+    "auth_client_demo_assets": {
+      "dependencies": ["azle_starter"],
       "frontend": {
         "entrypoint": "src/auth_client_demo_assets/src/index.html"
       },

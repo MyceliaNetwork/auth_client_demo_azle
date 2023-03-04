@@ -8,9 +8,9 @@ function initCanisterEnv() {
   let localCanisters, prodCanisters;
   try {
     localCanisters = require(path.resolve(
-        ".dfx",
-        "local",
-        "canister_ids.json"
+      ".dfx",
+      "local",
+      "canister_ids.json"
     ));
   } catch (error) {
     console.log("No local canister_ids.json found. Continuing production");
@@ -22,15 +22,15 @@ function initCanisterEnv() {
   }
 
   const network =
-      process.env.DFX_NETWORK ||
-      (process.env.NODE_ENV === "production" ? "ic" : "local");
+    process.env.DFX_NETWORK ||
+    (process.env.NODE_ENV === "production" ? "ic" : "local");
 
   const canisterConfig = network === "local" ? localCanisters : prodCanisters;
 
   return Object.entries(canisterConfig).reduce((prev, current) => {
     const [canisterName, canisterDetails] = current;
     prev[canisterName.toUpperCase() + "_CANISTER_ID"] =
-        canisterDetails[network];
+      canisterDetails[network];
     return prev;
   }, {});
 }
@@ -38,16 +38,11 @@ const canisterEnvVariables = initCanisterEnv();
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const REPLICA_PORT = process.env.DFX_REPLICA_PORT ?? "4943";
+const REPLICA_PORT = "49477";
 
 const frontend_directory = "auth_client_demo_assets";
 
-const asset_entry = path.join(
-    "src",
-    frontend_directory,
-    "src",
-    "index.html"
-);
+const asset_entry = path.join("src", frontend_directory, "src", "index.html");
 
 module.exports = {
   target: "web",
