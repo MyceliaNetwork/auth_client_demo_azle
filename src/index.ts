@@ -1,4 +1,4 @@
-import { $query, $update } from "azle";
+import { ic, Principal, $query, $update } from "azle";
 
 // This is a global variable that is stored on the heap
 let message: string = "hoax";
@@ -14,4 +14,10 @@ export function get_message(): string {
 $update;
 export function set_message(new_message: string): void {
   message = new_message; // This change will be persisted
+}
+
+// returns the principal of the identity that called this function
+$query;
+export function whoami(): Principal {
+  return ic.caller();
 }

@@ -2,11 +2,11 @@ import { ActorSubclass } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { html, render } from "lit-html";
 import { renderIndex } from ".";
-import { _SERVICE } from "../../../declarations/azle_starter/azle_starter.did";
+import { _SERVICE } from "../../../declarations/whoami/whoami.did";
 
 const content = () => html`<div class="container">
   <style>
-    #azle_starter {
+    #whoami {
       border: 1px solid #1a1a1a;
       margin-bottom: 1rem;
     }
@@ -14,10 +14,8 @@ const content = () => html`<div class="container">
   <h1>Internet Identity Client</h1>
   <h2>You are authenticated!</h2>
   <p>To see how a canister views you, click this button!</p>
-  <button type="button" id="azle_starterButton" class="primary">
-    Who am I?
-  </button>
-  <input type="text" readonly id="azle_starter" placeholder="your Identity" />
+  <button type="button" id="whoamiButton" class="primary">Who am I?</button>
+  <input type="text" readonly id="whoami" placeholder="your Identity" />
   <button id="logout">log out</button>
 </div>`;
 
@@ -27,14 +25,12 @@ export const renderLoggedIn = (
 ) => {
   render(content(), document.getElementById("pageContent") as HTMLElement);
 
-  (document.getElementById("azle_starterButton") as HTMLButtonElement).onclick =
+  (document.getElementById("whoamiButton") as HTMLButtonElement).onclick =
     async () => {
       try {
-        const response = await actor.get_message();
-        console.log(response);
-        (
-          document.getElementById("azle_starterButton") as HTMLInputElement
-        ).value = response.toString();
+        const response = await actor.whoami();
+        (document.getElementById("whoami") as HTMLInputElement).value =
+          response.toString();
       } catch (error) {
         console.error(error);
       }

@@ -1,12 +1,12 @@
 {
   "canisters": {
-    "azle_starter": {
+    "whoami": {
       "type": "custom",
-      "build": "npx azle azle_starter",
+      "build": "npx azle whoami",
       "root": "src",
       "ts": "src/index.ts",
       "candid": "src/index.did",
-      "wasm": ".azle/azle_starter/azle_starter.wasm.gz"
+      "wasm": ".azle/whoami/whoami.wasm.gz"
     },
     "internet_identity": {
       "type": "custom",
@@ -21,7 +21,7 @@
       }
     },
     "auth_client_demo_assets": {
-      "dependencies": ["azle_starter"],
+      "dependencies": ["whoami"],
       "frontend": {
         "entrypoint": "src/auth_client_demo_assets/src/index.html"
       },

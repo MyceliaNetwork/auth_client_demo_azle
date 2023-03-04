@@ -21,7 +21,7 @@
     "isolatedModules": true,
     "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
     "paths": {
-      "dfx-generated/azle_starter": ["./.dfx/local/canisters/azle_starter"]
+      "dfx-generated/whoami": ["./.dfx/local/canisters/whoami"]
     }
   },
 

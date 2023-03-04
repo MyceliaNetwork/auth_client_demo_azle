@@ -1,7 +1,7 @@
 import { AuthClient } from "@dfinity/auth-client";
 import { renderIndex } from "./views";
 import { renderLoggedIn } from "./views/loggedIn";
-import { canisterId, createActor } from "../../declarations/azle_starter";
+import { canisterId, createActor } from "../../declarations/whoami";
 import { Actor, Identity } from "@dfinity/agent";
 
 const init = async () => {
@@ -69,18 +69,18 @@ async function setupToast() {
 
 async function handleAuthenticated(authClient: AuthClient) {
   const identity = (await authClient.getIdentity()) as unknown as Identity;
-  const azle_starter_actor = createActor(canisterId as string, {
+  const whoami_actor = createActor(canisterId as string, {
     agentOptions: {
       identity,
     },
   });
   // Invalidate identity then render login when user goes idle
   authClient.idleManager?.registerCallback(() => {
-    Actor.agentOf(azle_starter_actor)?.invalidateIdentity?.();
+    Actor.agentOf(whoami_actor)?.invalidateIdentity?.();
     renderIndex();
   });
 
-  renderLoggedIn(azle_starter_actor, authClient);
+  renderLoggedIn(whoami_actor, authClient);
 }
 
 init();
