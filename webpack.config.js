@@ -38,7 +38,7 @@ const canisterEnvVariables = initCanisterEnv();
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const REPLICA_PORT = "49477";
+const REPLICA_PORT = process.env.DFX_REPLICA_PORT ?? "49477";
 
 const frontend_directory = "auth_client_demo_assets";
 
