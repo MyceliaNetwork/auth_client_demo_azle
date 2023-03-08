@@ -23,8 +23,8 @@ To get started, start a local dfx development environment in this directory with
 ```sh
 cd auth-client-demo-azle/
 npm run dfx_install
-npm run canister_deploy_local
 npm run replica_start
+npm run canister_deploy_local
 npm start
 ```
 
